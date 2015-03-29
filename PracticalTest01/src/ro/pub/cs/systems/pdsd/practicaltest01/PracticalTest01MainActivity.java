@@ -1,15 +1,19 @@
 package ro.pub.cs.systems.pdsd.practicaltest01;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.EditText;
-import android.widget.Button;
 import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.Toast;
 
 public class PracticalTest01MainActivity extends Activity {
+	
+	private final static int SECONDARY_ACTIVITY_REQUEST_CODE = 1;
 	
 	private ButtonClickListener buttonClickListener = new ButtonClickListener();
 	 
@@ -21,8 +25,17 @@ public class PracticalTest01MainActivity extends Activity {
 	      EditText rightEditText = (EditText)PracticalTest01MainActivity.this.findViewById(R.id.right_edit_text);
 	      int leftButtonClickedNumber = Integer.parseInt(leftEditText.getText().toString());
 	      int rightButtonClickedNumber = Integer.parseInt(rightEditText.getText().toString());
-	 
+	      
 	      switch(view.getId()) {
+	      	case R.id.navigate_to_secondary_activity_button:
+	          Intent intent = new Intent("ro.pub.cs.systems.pdsd.intent.action.PracticalTest01SecondaryActivity");
+	          intent.putExtra("number_of_clicks",
+	            String.valueOf(
+	              Integer.parseInt(leftEditText.getText().toString())
+	              + Integer.parseInt(rightEditText.getText().toString())
+	            ));
+	          startActivityForResult(intent, SECONDARY_ACTIVITY_REQUEST_CODE);
+	          break;
 	        case R.id.left_button:
 	          leftButtonClickedNumber++;
 	          leftEditText.setText(String.valueOf(leftButtonClickedNumber));
@@ -30,9 +43,9 @@ public class PracticalTest01MainActivity extends Activity {
 	        case R.id.right_button:
 	          rightButtonClickedNumber++;
 	          rightEditText.setText(String.valueOf(rightButtonClickedNumber));
-	          break;
+	          break;	    
 	      }
-	    }
+	    }	   
 	  } 
 
 	@Override
@@ -68,6 +81,9 @@ public class PracticalTest01MainActivity extends Activity {
             leftEditText.setText(String.valueOf(0));
             rightEditText.setText(String.valueOf(0));
           }
+        
+        Button navigateToSecondaryActivityButton = (Button)findViewById(R.id.navigate_to_secondary_activity_button);
+        navigateToSecondaryActivityButton.setOnClickListener(buttonClickListener); 
         
 	}
 
@@ -136,4 +152,9 @@ public class PracticalTest01MainActivity extends Activity {
 	    savedInstanceState.putString("rightCount", rightEditText.getText().toString());
 		
     }
+	
+	 @Override
+	  public void onActivityResult(int requestCode, int resultCode, Intent intent) {
+	    Toast.makeText(this, "The activity returned with result "+resultCode, Toast.LENGTH_LONG).show();
+	  }
 }
